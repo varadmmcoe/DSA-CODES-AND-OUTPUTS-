@@ -1,0 +1,70 @@
+#include <stdio.h>
+#include <string.h>
+
+typedef struct {
+    int id;
+    char name[50];
+    float marks;
+} Student;
+
+int count = 0;
+Student db[100];
+
+void create() {
+    db[0] = (Student){101, "Alice", 88.5};
+    db[1] = (Student){102, "Bob", 75.0};
+    db[2] = (Student){103, "Charlie", 92.0};
+    count = 3;
+    printf("Database initialized with %d records.\n", count);
+}
+
+void display() {
+    printf("\n--- Student Database ---\n");
+    for (int i = 0; i < count; i++) {
+        printf("ID: %d | Name: %-10s | Marks: %.2f\n", db[i].id, db[i].name, db[i].marks);
+    }
+}
+
+void modify(int id, float new_marks) {
+    for (int i = 0; i < count; i++) {
+        if (db[i].id == id) {
+            db[i].marks = new_marks;
+            printf("Updated ID %d marks to %.2f\n", id, new_marks);
+            return;
+        }
+    }
+    printf("ID %d not found.\n", id);
+}
+
+void search(int id) {
+    for (int i = 0; i < count; i++) {
+        if (db[i].id == id) {
+            printf("Found Record -> ID: %d, Name: %s, Marks: %.2f\n", db[i].id, db[i].name, db[i].marks);
+            return;
+        }
+    }
+    printf("Record not found.\n");
+}
+
+void sort_by_marks() {
+    for (int i = 0; i < count - 1; i++) {
+        for (int j = 0; j < count - i - 1; j++) {
+            if (db[j].marks > db[j + 1].marks) {
+                Student temp = db[j];
+                db[j] = db[j + 1];
+                db[j + 1] = temp;
+            }
+        }
+    }
+    printf("Sorted by marks successfully.\n");
+}
+
+int main() {
+    create();
+    display();
+    modify(102, 81.0);
+    search(102);
+    sort_by_marks();
+    display();
+    return 0;
+}
