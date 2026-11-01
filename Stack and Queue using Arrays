@@ -1,0 +1,33 @@
+#include <stdio.h>
+#define MAX 5
+
+// --- Stack ---
+int stack[MAX], top = -1;
+void push(int val) {
+    if (top == MAX - 1) printf("Stack Overflow\n");
+    else stack[++top] = val;
+}
+int pop() {
+    if (top == -1) { printf("Stack Underflow\n"); return -1; }
+    return stack[top--];
+}
+
+// --- Queue ---
+int queue[MAX], front = 0, rear = -1;
+void enqueue(int val) {
+    if (rear == MAX - 1) printf("Queue Overflow\n");
+    else queue[++rear] = val;
+}
+int dequeue() {
+    if (front > rear) { printf("Queue Underflow\n"); return -1; }
+    return queue[front++];
+}
+
+int main() {
+    push(10); push(20);
+    printf("Popped from stack: %d\n", pop());
+
+    enqueue(100); enqueue(200);
+    printf("Dequeued from queue: %d\n", dequeue());
+    return 0;
+}
