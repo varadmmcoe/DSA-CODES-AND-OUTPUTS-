@@ -1,0 +1,53 @@
+#include <stdio.h>
+#include <stdbool.h>
+
+#define BUFFER_SIZE 8
+
+typedef struct {
+    char data[BUFFER_SIZE];
+    int head;
+    int tail;
+    int count;
+} UART_RingBuffer;
+
+void initBuffer(UART_RingBuffer *buf) {
+    buf->head = 0;
+    buf->tail = 0;
+    buf->count = 0;
+}
+
+bool uart_transmit(UART_RingBuffer *buf, char byte) {
+    if (buf->count == BUFFER_SIZE) return false; // Buffer Full
+    buf->data[buf->head] = byte;
+    buf->head = (buf->head + 1) % BUFFER_SIZE;
+    buf->count++;
+    return true;
+}
+
+bool uart_receive(UART_RingBuffer *buf, char *byte) {
+    if (buf->count == 0) return false; // Buffer Empty
+    *byte = buf->data[buf->tail];
+    buf->tail = (buf->tail + 1) % BUFFER_SIZE;
+    buf->count--;
+    return true;
+}
+
+int main() {
+    UART_RingBuffer uart_tx;
+    initBuffer(&uart_tx);
+
+    const char *msg = "HELLO";
+    printf("Transmitting over UART buffer: %s\n", msg);
+    for (int i = 0; msg[i] != '\0'; i++) {
+        uart_transmit(&uart_tx, msg[i]);
+    }
+
+    printf("Receiving from UART buffer: ");
+    char received_char;
+    while (uart_receive(&uart_tx, &received_char)) {
+        putchar(received_char);
+    }
+    printf("\n");
+
+    return 0;
+}
